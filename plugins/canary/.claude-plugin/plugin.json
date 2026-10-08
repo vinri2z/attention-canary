@@ -1,0 +1,13 @@
+{
+  "name": "canary",
+  "version": "0.1.0",
+  "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it halts Claude.",
+  "author": {
+    "name": "vinri2z"
+  },
+  "keywords": [
+    "attention-check",
+    "ask-user-question",
+    "hooks"
+  ]
+}
