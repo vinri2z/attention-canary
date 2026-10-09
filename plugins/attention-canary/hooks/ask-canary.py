@@ -21,7 +21,7 @@ from datetime import datetime, timezone
 
 CANARY_RATE = 0.3
 LOG_PATH = os.environ.get(
-    "CANARY_LOG", os.path.expanduser("~/.claude/canary/canary-log.jsonl")
+    "CANARY_LOG", os.path.expanduser("~/.claude/attention-canary/canary-log.jsonl")
 )
 MAX_OPTIONS = 4
 MIN_OPTIONS = 2

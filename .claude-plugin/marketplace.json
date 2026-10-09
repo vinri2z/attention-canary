@@ -1,16 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "canary",
+  "name": "attention-canary",
   "owner": {
     "name": "vinri2z"
   },
   "metadata": {
-    "description": "Canary attention check for Claude Code",
+    "description": "Attention-check canary for Claude Code",
     "version": "0.1.0"
   },
   "plugins": [
     {
-      "name": "canary",
+      "name": "attention-canary",
       "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it halts Claude.",
       "category": "productivity",
       "keywords": [
@@ -18,7 +18,7 @@
         "ask-user-question",
         "hooks"
       ],
-      "source": "./plugins/canary"
+      "source": "./plugins/attention-canary"
     }
   ]
 }
