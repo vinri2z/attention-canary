@@ -6,8 +6,8 @@ AskUserQuestion.
 By the tenth question of a session, it is easy to hit Enter on whatever comes
 first, usually the option marked "(Recommended)". This plugin plants a decoy in
 some of those questions: a plausible-sounding but plainly wrong option, placed
-first and labelled "(Recommended)". Pick it and Claude stops until you tell it
-how to proceed.
+first and labelled "(Recommended)". Pick it and Claude throws that answer away
+and asks the question again.
 
 ## What it looks like
 
@@ -31,12 +31,13 @@ Which name should I rename the canary repo and plugin to?
 Option 1 is the canary. It reads fine at a glance. On a second read, naming a
 repo after a file extension is plainly wrong. Claude had marked `attention-check`
 as its real recommendation; the plugin took that label off, so the canary is the
-only option claiming to be recommended. Picking it ends the turn with:
+only option claiming to be recommended. Picking it shows:
 
 ```
-Attention check failed: you picked "Name it after the hook file, ask-canary-py (Recommended)".
-Claude ragequit. Read the options, then tell it how to proceed.
+Attention check failed: you picked "Name it after the hook file, ask-canary-py (Recommended)". Asking again.
 ```
+
+Claude then asks the same question again, with a new canary.
 
 ## Examples
 
@@ -78,8 +79,9 @@ Three hooks, all in `plugins/attention-canary/hooks/ask-canary.py`:
   time it drops the canary. Otherwise it moves the canary first, labels it
   "(Recommended)" and takes the label off the real recommendation. If Claude
   wrote no canary, it uses one from the built-in list.
-- **`PostToolUse`** logs every question that carried a canary, then stops the
-  session if the answer was the canary.
+- **`PostToolUse`** logs every question that carried a canary. If the answer
+  was the canary, it blocks the result and tells Claude to ask that question
+  again with a new canary. Answers to the other questions in the call stand.
 
 Edge cases:
 
@@ -103,7 +105,7 @@ Edge cases:
 Every AskUserQuestion that carried a canary adds one line to the log: `ts`,
 `session_id`, `repo`, `question`, `options`, `chosen`, `canary`, `generated` (Claude
 wrote it, rather than it coming from the list) and `missed`. The log stays on your
-machine. A write that fails is dropped, so the halt still fires.
+machine. A write that fails is dropped, so the re-ask still fires.
 
 ```bash
 LOG=~/.claude/attention-canary/canary-log.jsonl

@@ -8,7 +8,7 @@ canary first and labels it (Recommended), falling back to CANARIES when Claude
 wrote none; otherwise drops it. The canaries shown ride along in the call's
 metadata, which is how `post` knows them.
 `post` (PostToolUse): logs every question that carried a canary to LOG_PATH,
-then halts Claude if the human picked one.
+then, if the human picked one, discards that answer and has Claude ask again.
 """
 
 import json
@@ -55,7 +55,8 @@ reads the options before picking one.
 
 - Make it the last option, and start its description with "{marker} ". The plugin \
 drops it from most questions. On the rest it moves it first and labels it \
-"(Recommended)". Picking it halts the session, so it is never acted on.
+"(Recommended)". Picking it discards the answer and you ask the question again, so \
+it is never acted on.
 - Keep the real options to two or three, so the canary fits the four-option limit.
 - Fit it to the question. Use its subject, files, tools and wording, so it could only \
 answer this question. It should pass at a glance and be plainly wrong on a second \
@@ -66,9 +67,11 @@ copy the examples.
 
 Examples, for tone only:
 {examples}"""
-STOP_REASON = (
-    'Attention check failed: you picked "{label}". '
-    "Claude ragequit. Read the options, then tell it how to proceed."
+RETRY_MESSAGE = 'Attention check failed: you picked "{label}". Asking again.'
+RETRY_REASON = (
+    "The human picked the canary on {questions}. Ignore that answer and do not act "
+    "on it. Call AskUserQuestion again right away with the same question and real "
+    "options, plus a new canary. Answers to the other questions stand."
 )
 
 rng = random.SystemRandom()
@@ -221,10 +224,16 @@ def log(payload, records):
 def post(payload):
     records = canary_records(payload)
     log(payload, records)
-    label = next((r["canary"] for r in records if r["missed"]), None)
-    if not label:
+    missed = [r for r in records if r["missed"]]
+    if not missed:
         return None
-    return {"continue": False, "stopReason": STOP_REASON.format(label=label)}
+    return {
+        "decision": "block",
+        "reason": RETRY_REASON.format(
+            questions=", ".join(json.dumps(r["question"]) for r in missed)
+        ),
+        "systemMessage": RETRY_MESSAGE.format(label=missed[0]["canary"]),
+    }
 
 
 def main():

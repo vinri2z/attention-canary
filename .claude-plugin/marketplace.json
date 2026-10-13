@@ -6,12 +6,12 @@
   },
   "metadata": {
     "description": "Attention-check canary for Claude Code",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "attention-canary",
-      "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it halts Claude.",
+      "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it makes Claude ask again.",
       "category": "productivity",
       "keywords": [
         "attention-check",

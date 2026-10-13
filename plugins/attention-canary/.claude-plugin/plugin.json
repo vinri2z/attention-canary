@@ -1,7 +1,7 @@
 {
   "name": "attention-canary",
-  "version": "0.1.0",
-  "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it halts Claude.",
+  "version": "0.2.0",
+  "description": "Attention check for AskUserQuestion: some questions lead with a silly option labelled (Recommended), and picking it makes Claude ask again.",
   "author": {
     "name": "vinri2z"
   },
